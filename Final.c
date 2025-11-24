@@ -82,28 +82,29 @@ void EXTI15_10_IRQHandler(void){
         //--------- section max out at 17 -> go back to 0 ----------//
         section = (section + 1) % 18;
         
-        switch (section)
-        {
-					case 0:  display_letter('a'); break;
-					case 1:  display_letter('b'); break;
-					case 2:  display_letter('c'); break;
-					case 3:  display_letter('d'); break;
-					case 4:  display_letter('e'); break;
-					case 5:  display_letter('f'); break;
-					case 6:  display_letter('g'); break;
-					case 7:  display_letter('h'); break;
-					case 8:  display_letter('i'); break;
-					case 9:  display_letter('j'); break;
-					case 10: display_letter('k'); break;
-					case 11: display_letter('l'); break;
-					case 12: display_letter('m'); break;
-					case 13: display_letter('n'); break;
-					case 14: display_letter('o'); break;
-					case 15: display_letter('p'); break;
-					case 16: display_letter('q'); break;
-					case 17: display_letter('r'); break;
-					default: break;
-        }
+//				// Sample display code, shows each character
+//        switch (section)
+//        {
+//					case 0:  display_letter('a'); break;
+//					case 1:  display_letter('b'); break;
+//					case 2:  display_letter('c'); break;
+//					case 3:  display_letter('d'); break;
+//					case 4:  display_letter('e'); break;
+//					case 5:  display_letter('f'); break;
+//					case 6:  display_letter('g'); break;
+//					case 7:  display_letter('h'); break;
+//					case 8:  display_letter('i'); break;
+//					case 9:  display_letter('j'); break;
+//					case 10: display_letter('k'); break;
+//					case 11: display_letter('l'); break;
+//					case 12: display_letter('m'); break;
+//					case 13: display_letter('n'); break;
+//					case 14: display_letter('o'); break;
+//					case 15: display_letter('p'); break;
+//					case 16: display_letter('q'); break;
+//					case 17: display_letter('r'); break;
+//					default: break;
+//        }
 				
 //				switch (section)
 //        {
@@ -127,29 +128,29 @@ void EXTI15_10_IRQHandler(void){
 //					case 17: display_letter('9'); break;
 //					default: break;
 //        }
-//				
-//				switch (section)
-//        {
-//					case 0:  display_letter('.'); break;
-//					case 1:  display_letter(','); break;
-//					case 2:  display_letter('!'); break;
-//					case 3:  display_letter('?'); break;
-//					case 4:  display_letter('-'); break;
-//					case 5:  display_letter(':'); break;
-//					case 6:  display_letter(' '); break;
-//					case 7:  display_letter(' '); break;
-//					case 8:  display_letter(' '); break;
-//					case 9:  display_letter(' '); break;
-//					case 10: display_letter(' '); break;
-//					case 11: display_letter(' '); break;
-//					case 12: display_letter(' '); break;
-//					case 13: display_letter(' '); break;
-//					case 14: display_letter(' '); break;
-//					case 15: display_letter(' '); break;
-//					case 16: display_letter(' '); break;
-//					case 17: display_letter(' '); break;
-//					default: break;
-//        }
+				
+				switch (section)
+        {
+					case 0:  display_letter('.'); break;
+					case 1:  display_letter(','); break;
+					case 2:  display_letter('!'); break;
+					case 3:  display_letter('?'); break;
+					case 4:  display_letter('-'); break;
+					case 5:  display_letter(':'); break;
+					case 6:  display_letter(' '); break;
+					case 7:  display_letter(' '); break;
+					case 8:  display_letter(' '); break;
+					case 9:  display_letter(' '); break;
+					case 10: display_letter(' '); break;
+					case 11: display_letter(' '); break;
+					case 12: display_letter(' '); break;
+					case 13: display_letter(' '); break;
+					case 14: display_letter(' '); break;
+					case 15: display_letter(' '); break;
+					case 16: display_letter(' '); break;
+					case 17: display_letter(' '); break;
+					default: break;
+        }
         
         //reenable interrupt
         EXTI->PR  = (1u << 12);				
