@@ -6,8 +6,8 @@
 // each col should be off by 1ms
 // 18 sections 
 
-//  PC13 -- turn on/off PC11 (motor connected to)
-//  PC 12 -- slit interupt 
+//  PC13 -- turn on/off PC11 (input to motor driver)
+//  PC12 -- motor encoder wheel to drive interrupt
 //  motor voltage 7.1 (V) | 0.7 - 1 (A)
 
 
@@ -16,18 +16,6 @@ volatile int8_t section = 0; //there are 18 sections
 volatile int8_t motor_run = 0;
 //volatile display_data[5] = {};
 
-void delay_us(int n) {
-	 int i;
-	 for (; n > 0; n--)
-			for (i = 0; i < 1; i++);
-}
-
-/* 16 MHz SYSCLK */
-void delayMs(int n) {
-	int i;
-	for (; n > 0; n--)
-	for (i = 0; i < 1067; i++) ;
-}
 
 void motor_and_display_init(){
     RCC->AHB1ENR |= 0x04;   // En portC
@@ -35,7 +23,7 @@ void motor_and_display_init(){
 		
     GPIOC->MODER &= ~0x0C000000;    //Clear pin mode to input mode
     
-    GPIOC->MODER &= ~(3UL << (11 * 2));  // Clear bits 22–23
+    GPIOC->MODER &= ~(3UL << (11 * 2));  // Clear bits 22ï¿½23
     GPIOC->MODER |=  (1UL << (11 * 2));  // Set bit 22 to 1 (output mode)
 		
     // Map EXTI13 -> Port C
@@ -73,8 +61,9 @@ void motor_and_display_init(){
 
 void EXTI15_10_IRQHandler(void){	
     
-    // This is for motor 
-    if (EXTI->PR & (1u << 13)) {
+    // Motor toggle button interrupt 
+    if (EXTI->PR & (1u << 13)) 
+		{
         EXTI->IMR &= ~(1u << 13);
         EXTI->PR |= (1u << 13);
 
@@ -85,56 +74,83 @@ void EXTI15_10_IRQHandler(void){
         EXTI->IMR |= (1u << 13);
     }
     
-    // This is for The slit hehe 
+    // Motor encoder wheel interrupt
     if (EXTI->PR & (1U<<12)){
-      EXTI->IMR &= ~(1u << 12);
-      EXTI->PR |= (1u << 12);   //ack
+        EXTI->IMR &= ~(1u << 12);
+        EXTI->PR |= (1u << 12);   //ack
         
-      //--------- section max out at 17 -> go back to 0 ----------//
-      section = (section + 1) % 18;
-      
-      
-      if (section == 8) {
-          int8_t i ;
-          for (i = 4; i >= 0; i--){       //flips due to spinning in clock_wise
-              //set_leds(display_data[i]);  // display each column
-              GPIOC->ODR |= font_D[i];
-              delayMs(1);   //1ms delay between each pattern 
-              GPIOC->ODR &= ~(0x3FF) ;       //turn off before another pattern
-              
-          }
-      }
-      
-      if (section == 9) {
-          int8_t i ;
-          for (i = 4; i >= 0; i--){
-              //set_leds(display_data[i]);  // display each column
-              GPIOC->ODR |= font_C[i];
-              delayMs(1);   //1ms delay between each pattern 
-              GPIOC->ODR &= ~(0x3FF) ;       //turn off before another pattern
-              
-          }
-      }
-      if (section == 10) {
-          int8_t i ;
-          for (i = 4; i >= 0; i--){
-              //set_leds(display_data[i]);  // display each column
-              GPIOC->ODR |= font_B[i];
-              delayMs(1);   //1ms delay between each pattern 
-              GPIOC->ODR &= ~(0x3FF) ;       //turn off before another pattern
-              
-          }
-      }
-      if (section == 11) {
-          int8_t i ;
-          for (i = 4; i >= 0; i--){ 
-              //set_leds(display_data[i]);  // display each column
-              GPIOC->ODR |= font_A[i];
-              delayMs(1);   //1ms delay between each pattern 
-              GPIOC->ODR &= ~(0x3FF) ;       //turn off before another pattern
-              
-          }
-      }
+        //--------- section max out at 17 -> go back to 0 ----------//
+        section = (section + 1) % 18;
+        
+        switch (section)
+        {
+					case 0:  display_letter('a'); break;
+					case 1:  display_letter('b'); break;
+					case 2:  display_letter('c'); break;
+					case 3:  display_letter('d'); break;
+					case 4:  display_letter('e'); break;
+					case 5:  display_letter('f'); break;
+					case 6:  display_letter('g'); break;
+					case 7:  display_letter('h'); break;
+					case 8:  display_letter('i'); break;
+					case 9:  display_letter('j'); break;
+					case 10: display_letter('k'); break;
+					case 11: display_letter('l'); break;
+					case 12: display_letter('m'); break;
+					case 13: display_letter('n'); break;
+					case 14: display_letter('o'); break;
+					case 15: display_letter('p'); break;
+					case 16: display_letter('q'); break;
+					case 17: display_letter('r'); break;
+					default: break;
+        }
+				
+//				switch (section)
+//        {
+//					case 0:  display_letter('s'); break;
+//					case 1:  display_letter('t'); break;
+//					case 2:  display_letter('u'); break;
+//					case 3:  display_letter('v'); break;
+//					case 4:  display_letter('w'); break;
+//					case 5:  display_letter('x'); break;
+//					case 6:  display_letter('y'); break;
+//					case 7:  display_letter('z'); break;
+//					case 8:  display_letter('0'); break;
+//					case 9:  display_letter('1'); break;
+//					case 10: display_letter('2'); break;
+//					case 11: display_letter('3'); break;
+//					case 12: display_letter('4'); break;
+//					case 13: display_letter('5'); break;
+//					case 14: display_letter('6'); break;
+//					case 15: display_letter('7'); break;
+//					case 16: display_letter('8'); break;
+//					case 17: display_letter('9'); break;
+//					default: break;
+//        }
+//				
+//				switch (section)
+//        {
+//					case 0:  display_letter('.'); break;
+//					case 1:  display_letter(','); break;
+//					case 2:  display_letter('!'); break;
+//					case 3:  display_letter('?'); break;
+//					case 4:  display_letter('-'); break;
+//					case 5:  display_letter(':'); break;
+//					case 6:  display_letter(' '); break;
+//					case 7:  display_letter(' '); break;
+//					case 8:  display_letter(' '); break;
+//					case 9:  display_letter(' '); break;
+//					case 10: display_letter(' '); break;
+//					case 11: display_letter(' '); break;
+//					case 12: display_letter(' '); break;
+//					case 13: display_letter(' '); break;
+//					case 14: display_letter(' '); break;
+//					case 15: display_letter(' '); break;
+//					case 16: display_letter(' '); break;
+//					case 17: display_letter(' '); break;
+//					default: break;
+//        }
+        
         //reenable interrupt
         EXTI->PR  = (1u << 12);				
         EXTI->IMR |= (1u << 12);

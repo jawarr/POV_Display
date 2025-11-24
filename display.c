@@ -5,6 +5,14 @@
 
 volatile uint8_t display_data[5] = {0};   //global so it can be loaded. 
 
+/* 16 MHz SYSCLK */
+void delayMs(int n) 
+{
+	int i;
+	for (; n > 0; n--)
+	for (i = 0; i < 1067; i++) ;
+}
+
 // Initialize GPIO for both arms
 void display_init(void) {
     // Enable GPIO clocks for both ports
@@ -15,14 +23,28 @@ void display_init(void) {
 }
 
 //Set pattern for the arm
-void set_leds(uint8_t arm1){   
+void set_leds(uint8_t arm1)
+{   
     GPIOC->ODR = (GPIOC->ODR & ~0x001F) | (arm1 & 0x001F);
 }
 
 //used to load display data into array
-void input_letter(char letter) {
+void input_letter(char letter) 
+{
     const uint8_t* f = get_font(letter);
-    for (int j = 0; j < 5; j++) {
+    for (int j = 0; j < 5; j++) 
+		{
         display_data[j] = f[j];
     }   
+}
+
+void display_letter(char letter)
+{
+	const uint8_t* f = get_font(letter);
+	for (int i = 4; i >=	0; i--) 
+	{
+		set_leds(f[i]);
+		delayMs(1);
+		set_leds(0x00);
+	}
 }

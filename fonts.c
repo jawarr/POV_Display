@@ -17,8 +17,8 @@
 
 //                        16   8   4   2   1
 //                        
-uint8_t font_space[5] = {0x00, 0x00, 0x00, 0x00, 0x00};
 
+// Uppercase letters
 uint8_t font_A[5] = {0x1E, 0x05, 0x05, 0x05, 0x1E};       
 uint8_t font_B[5] = {0x1F, 0x15, 0x15, 0x15, 0x1B};
 uint8_t font_C[5] = {0x1F, 0x11, 0x11, 0x11, 0x11};
@@ -26,8 +26,7 @@ uint8_t font_D[5] = {0x1F, 0x11, 0x11, 0x11, 0x0E};
 uint8_t font_E[5] = {0x1F, 0x15, 0x15, 0x11, 0x11};  
 uint8_t font_F[5] = {0x1F, 0x05, 0x05, 0x01, 0x01};
 uint8_t font_G[5] = {0x1F, 0x11, 0x15, 0x15, 0x1D};
-uint8_t font_H[5] = {0x1F, 0x14, 0x14, 0x14, 0x1F};
-
+uint8_t font_H[5] = {0x1F, 0x04, 0x04, 0x04, 0x1F};
 uint8_t font_I[5] = {0x00, 0x11, 0x1F, 0x11, 0x00};
 uint8_t font_J[5] = {0x18, 0x10, 0x10, 0x1F, 0x00};
 uint8_t font_K[5] = {0x1F, 0x04, 0x0A, 0x11, 0x00};      
@@ -36,7 +35,7 @@ uint8_t font_M[5] = {0x1F, 0x02, 0x04, 0x02, 0x1F};
 uint8_t font_N[5] = {0x1F, 0x02, 0x04, 0x08, 0x1F};
 uint8_t font_O[5] = {0x1F, 0x11, 0x11, 0x11, 0x1F};
 uint8_t font_P[5] = {0x1F, 0x05, 0x05, 0x05, 0x07};
-uint8_t font_Q[5] = {0x1F, 0x14, 0x14, 0x14, 0x1F}; // here           16 8 4 2 1
+uint8_t font_Q[5] = {0x1F, 0x14, 0x14, 0x14, 0x1F}; 
 uint8_t font_R[5] = {0x1F, 0x14, 0x14, 0x14, 0x1F};
 uint8_t font_S[5] = {0x1F, 0x14, 0x14, 0x14, 0x1F};
 uint8_t font_T[5] = {0x1F, 0x14, 0x14, 0x14, 0x1F};
@@ -47,26 +46,77 @@ uint8_t font_X[5] = {0x1F, 0x14, 0x14, 0x14, 0x1F};
 uint8_t font_Y[5] = {0x1F, 0x14, 0x14, 0x14, 0x1F};
 uint8_t font_Z[5] = {0x1F, 0x14, 0x14, 0x14, 0x1F};
 
-
-
+// Numbers
 uint8_t font_0[5] = {0x1F, 0x14, 0x14, 0x14, 0x1F};
 uint8_t font_1[5] = {0x00, 0x09, 0x1F, 0x01, 0x00};
 uint8_t font_2[5] = {0x09, 0x13, 0x15, 0x11, 0x09};
+uint8_t font_3[5] = {0x0E, 0x11, 0x0E, 0x11, 0x0E};
+uint8_t font_4[5] = {0x11, 0x11, 0x1F, 0x01, 0x01};
+uint8_t font_5[5] = {0x1F, 0x10, 0x1E, 0x01, 0x1E};
+uint8_t font_6[5] = {0x0E, 0x10, 0x1E, 0x11, 0x0E};
+uint8_t font_7[5] = {0x1F, 0x01, 0x02, 0x04, 0x08};
+uint8_t font_8[5] = {0x0E, 0x11, 0x0E, 0x11, 0x0E};
+uint8_t font_9[5] = {0x0E, 0x11, 0x0F, 0x01, 0x0E};
 
+// Basic punctuation
+uint8_t font_period[5]   = {0x00, 0x00, 0x01, 0x00, 0x00}; // .
+uint8_t font_comma[5]    = {0x00, 0x00, 0x01, 0x02, 0x04}; // ,
+uint8_t font_exclam[5]   = {0x00, 0x00, 0x17, 0x00, 0x00}; // !
+uint8_t font_question[5] = {0x0E, 0x11, 0x02, 0x04, 0x04}; // ?
+uint8_t font_dash[5]     = {0x00, 0x00, 0x1C, 0x00, 0x00}; // -
+uint8_t font_colon[5]    = {0x00, 0x00, 0x0A, 0x00, 0x0A}; // :
+
+// Space
+uint8_t font_space[5] = {0x00, 0x00, 0x00, 0x00, 0x00};
 
 
 const uint8_t* get_font(char c) {
     switch (c) {
-        case 'A': return font_A;
-        case 'B': return font_B;
-        case 'C': return font_C;
-        case 'D': return font_D;
-        case 'E': return font_E;
-        case 'F': return font_F;
-        case 'G': return font_G;  
-      
+        case 'A': case 'a': return font_A;
+        case 'B': case 'b': return font_B;
+        case 'C': case 'c': return font_C;
+        case 'D': case 'd': return font_D;
+        case 'E': case 'e': return font_E;
+        case 'F': case 'f': return font_F;
+        case 'G': case 'g': return font_G;
+        case 'H': case 'h': return font_H;
+        case 'I': case 'i': return font_I;
+        case 'J': case 'j': return font_J;
+        case 'K': case 'k': return font_K;
+        case 'L': case 'l': return font_L;
+        case 'M': case 'm': return font_M;
+        case 'N': case 'n': return font_N;
+        case 'O': case 'o': return font_O;
+        case 'P': case 'p': return font_P;
+        case 'Q': case 'q': return font_Q;
+        case 'R': case 'r': return font_R;
+        case 'S': case 's': return font_S;
+        case 'T': case 't': return font_T;
+        case 'U': case 'u': return font_U;
+        case 'V': case 'v': return font_V;
+        case 'W': case 'w': return font_W;
+        case 'X': case 'x': return font_X;
+        case 'Y': case 'y': return font_Y;
+        case 'Z': case 'z': return font_Z;
+
+        case '0': return font_0;
         case '1': return font_1;
         case '2': return font_2;
+        case '3': return font_3;
+        case '4': return font_4;
+        case '5': return font_5;
+        case '6': return font_6;
+        case '7': return font_7;
+        case '8': return font_8;
+        case '9': return font_9;
+
+        case '.': return font_period;
+        case ',': return font_comma;
+        case '!': return font_exclam;
+        case '?': return font_question;
+        case '-': return font_dash;
+        case ':': return font_colon;
+
         default: return font_space;  // Unknown chars show as space
     }
 }
