@@ -5,6 +5,8 @@
 
 volatile uint8_t display_data[5] = {0};   //global so it can be loaded. 
 
+
+
 /* 16 MHz SYSCLK */
 void delayMs(int n) 
 {
@@ -28,7 +30,7 @@ void set_leds(uint8_t arm1)
     GPIOC->ODR = (GPIOC->ODR & ~0x001F) | (arm1 & 0x001F);
 }
 
-//used to load display data into array
+//used to load display data into array    <-- dont need this for rn 
 void input_letter(char letter) 
 {
     const uint8_t* f = get_font(letter);
@@ -41,8 +43,7 @@ void input_letter(char letter)
 void display_letter(char letter)
 {
 	const uint8_t* f = get_font(letter);
-	for (int i = 4; i >=	0; i--) 
-	{
+	for (int i = 4; i >=	0; i--) {     //reverse due to clockwise spin
 		set_leds(f[i]);
 		delayMs(1);
 		set_leds(0x00);

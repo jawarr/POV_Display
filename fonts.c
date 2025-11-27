@@ -1,4 +1,3 @@
-// fonts.c
 #include "fonts.h"
 
 // Character bitmaps (5 columns each, 5-bit high, bit 0 = bottom pixel, bit 4 = top pixel, black = on = 1)

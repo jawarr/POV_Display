@@ -2,6 +2,7 @@
 #include "stm32f4xx.h"
 #include "display.h"
 #include "fonts.h"
+#include "UART.h"
 
 // each col should be off by 1ms
 // 18 sections 
@@ -12,9 +13,10 @@
 
 
 
+
+volatile int8_t string_display[18] = {'A','B','C','D','E','F','G',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '};  // this need to be populated, default as empty  
 volatile int8_t section = 0; //there are 18 sections  
 volatile int8_t motor_run = 0;
-//volatile display_data[5] = {};
 
 
 void motor_and_display_init(){
@@ -105,50 +107,28 @@ void EXTI15_10_IRQHandler(void){
 //					case 17: display_letter('r'); break;
 //					default: break;
 //        }
-				
-//				switch (section)
-//        {
-//					case 0:  display_letter('s'); break;
-//					case 1:  display_letter('t'); break;
-//					case 2:  display_letter('u'); break;
-//					case 3:  display_letter('v'); break;
-//					case 4:  display_letter('w'); break;
-//					case 5:  display_letter('x'); break;
-//					case 6:  display_letter('y'); break;
-//					case 7:  display_letter('z'); break;
-//					case 8:  display_letter('0'); break;
-//					case 9:  display_letter('1'); break;
-//					case 10: display_letter('2'); break;
-//					case 11: display_letter('3'); break;
-//					case 12: display_letter('4'); break;
-//					case 13: display_letter('5'); break;
-//					case 14: display_letter('6'); break;
-//					case 15: display_letter('7'); break;
-//					case 16: display_letter('8'); break;
-//					case 17: display_letter('9'); break;
-//					default: break;
-//        }
-				
+
+
 				switch (section)
         {
-					case 0:  display_letter('.'); break;
-					case 1:  display_letter(','); break;
-					case 2:  display_letter('!'); break;
-					case 3:  display_letter('?'); break;
-					case 4:  display_letter('-'); break;
-					case 5:  display_letter(':'); break;
-					case 6:  display_letter(' '); break;
-					case 7:  display_letter(' '); break;
-					case 8:  display_letter(' '); break;
-					case 9:  display_letter(' '); break;
-					case 10: display_letter(' '); break;
-					case 11: display_letter(' '); break;
-					case 12: display_letter(' '); break;
-					case 13: display_letter(' '); break;
-					case 14: display_letter(' '); break;
-					case 15: display_letter(' '); break;
-					case 16: display_letter(' '); break;
-					case 17: display_letter(' '); break;
+					case 0:  display_letter(string_display[17]); break;      //reverse idx due to clockwise spin (letter are painted backward) 
+					case 1:  display_letter(string_display[16]); break;
+					case 2:  display_letter(string_display[15]); break;
+					case 3:  display_letter(string_display[14]); break;
+					case 4:  display_letter(string_display[13]); break;
+					case 5:  display_letter(string_display[12]); break;
+					case 6:  display_letter(string_display[11]); break;
+					case 7:  display_letter(string_display[10]); break;
+					case 8:  display_letter(string_display[9]); break;
+					case 9:  display_letter(string_display[8]); break;
+					case 10: display_letter(string_display[7]); break;
+					case 11: display_letter(string_display[6]); break;
+					case 12: display_letter(string_display[5]); break;
+					case 13: display_letter(string_display[4]); break;
+					case 14: display_letter(string_display[3]); break;
+					case 15: display_letter(string_display[2]); break;
+					case 16: display_letter(string_display[1]); break;
+					case 17: display_letter(string_display[0]); break;
 					default: break;
         }
         
@@ -157,19 +137,41 @@ void EXTI15_10_IRQHandler(void){
         EXTI->IMR |= (1u << 12);
     }
 }
+void str_populate(char* str){
+  
+     __disable_irq();   //disable interrupt for loading new str safely
+    for (int i = 0; i < 18; i++){
+        if(str[i] >= 33 && str[i] <= 126){
+            string_display[i] = str[i];
+        }else {
+          string_display[i] = ' ';  // pad with space, not null
+        }
+    }
+     __enable_irq();
+}
 
-
-
-//Everytime the arms past this point (PA0 input), this "home" point is used calc where the arms will be at the future time. 
 int main(void) {
     //Initialize display (sets up both GPIO ports)
     display_init();   
     motor_and_display_init();    // For motor control (PC13 to toggle PC11)
-    
-    input_letter('A');
-    
-
+    initUart();
+   
+    //variables for internal use
+    USER_DATA data;   //user input data 
+  
     while (1) {
-        //nothing 
+      
+      getsUart(&data);    //get data strings input
+     
+      str_populate(data.buffer);    //populate the display str base on the input 
+      
+      
+      //----- echo back the input ----//
+      uint8_t i;
+      for (i = 0; i < data.fieldCount; i++){
+          putsUart(&data.buffer[data.fieldPosition[i]]);
+          putcUart('\n');
+          putcUart('\r');
+      }
     }
 }
