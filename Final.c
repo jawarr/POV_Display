@@ -137,20 +137,26 @@ void EXTI15_10_IRQHandler(void){
         EXTI->IMR |= (1u << 12);
     }
 }
-void str_populate(char* str){
+void str_populate(char* str)
+{
   
      __disable_irq();   //disable interrupt for loading new str safely
-    for (int i = 0; i < 18; i++){
-        if(str[i] >= 33 && str[i] <= 126){
+    for (int i = 0; i < 18; i++)
+		{
+        if(str[i] >= 33 && str[i] <= 126)
+				{
             string_display[i] = str[i];
-        }else {
+        }
+				else 
+				{
           string_display[i] = ' ';  // pad with space, not null
         }
     }
      __enable_irq();
 }
 
-int main(void) {
+int main(void) 
+{
     //Initialize display (sets up both GPIO ports)
     display_init();   
     motor_and_display_init();    // For motor control (PC13 to toggle PC11)
@@ -159,19 +165,26 @@ int main(void) {
     //variables for internal use
     USER_DATA data;   //user input data 
   
-    while (1) {
-      
+    while (1) 
+		{
+			// ensure the whole structure (buffer, fieldCount, positions) is cleared each loop
+      memset(&data, 0, sizeof(data));
+
       getsUart(&data);    //get data strings input
-     
       str_populate(data.buffer);    //populate the display str base on the input 
       
       
       //----- echo back the input ----//
       uint8_t i;
-      for (i = 0; i < data.fieldCount; i++){
-          putsUart(&data.buffer[data.fieldPosition[i]]);
-          putcUart('\n');
-          putcUart('\r');
-      }
-    }
+      // limit echo count and validate positions before using them
+        for (i = 0; i < data.fieldCount && i < 18; i++)
+        {
+            uint8_t pos = data.fieldPosition[i];
+            if (pos < sizeof(data.buffer)) {
+                putsUart(&data.buffer[pos]);
+                putcUart('\n');
+                putcUart('\r');
+            }
+        }
+		}
 }
