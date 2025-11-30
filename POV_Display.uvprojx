@@ -424,6 +424,16 @@
               <FileType>1</FileType>
               <FilePath>.\UART.c</FilePath>
             </File>
+            <File>
+              <FileName>spi_temp_sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\spi_temp_sensor.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi_temp_sensor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\spi_temp_sensor.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -1,8 +1,10 @@
 // main.c
+#include <stdio.h>
 #include "stm32f4xx.h"
 #include "display.h"
 #include "fonts.h"
 #include "UART.h"
+#include "spi_temp_sensor.h"
 
 // each col should be off by 1ms
 // 18 sections 
@@ -157,34 +159,50 @@ void str_populate(char* str)
 
 int main(void) 
 {
-    //Initialize display (sets up both GPIO ports)
-    display_init();   
-    motor_and_display_init();    // For motor control (PC13 to toggle PC11)
-    initUart();
-   
-    //variables for internal use
-    USER_DATA data;   //user input data 
-  
+    display_init();   					// Initialize display (sets up GPIO ports)
+    motor_and_display_init();   // For motor control (PC13 to toggle PC11)
+    initUart();									// Initialize UART terminal
+    spi1_gpio_init();						// Initialize GPIO for SPI1
+	  spi1_init_1MHz_mode0();			// Initialize SPI1 for 1MHz, Mode 0
+	
+    USER_DATA data;   					//user input data 
+		
+	
+		putsUart("\e[0;92m"); 									// bold green text
+		putsUart("Enter text to display:\n\r");			
+    putsUart("\e[0m");	  									// reset to default text
+	
     while (1) 
 		{
-			// ensure the whole structure (buffer, fieldCount, positions) is cleared each loop
-      memset(&data, 0, sizeof(data));
+      memset(&data, 0, sizeof(data)); // ensure the whole structure (buffer, fieldCount, positions) is cleared each loop
 
-      getsUart(&data);    //get data strings input
-      str_populate(data.buffer);    //populate the display str base on the input 
-      
-      
-      //----- echo back the input ----//
-      uint8_t i;
-      // limit echo count and validate positions before using them
-        for (i = 0; i < data.fieldCount && i < 18; i++)
+      getsUart(&data);    // get data string input
+      parseFields(&data); // parse data into fields
+
+      // Check for temperature command
+      if (isCommand(&data, "temperature", 1))
+      {
+        char buffer[18];
+        char *text = getFieldString(&data, 1);
+        if (compare_strings(text, "c"))
         {
-            uint8_t pos = data.fieldPosition[i];
-            if (pos < sizeof(data.buffer)) {
-                putsUart(&data.buffer[pos]);
-                putcUart('\n');
-                putcUart('\r');
-            }
+          float temperature = get_temperature();
+          snprintf(buffer, sizeof(buffer), "%.2f C", temperature);
+          str_populate(buffer);
         }
+        else if (compare_strings(text, "f"))
+        {
+          float temperature = get_temperature();
+          float temperature_f = (temperature * 9.0f / 5.0f) + 32.0f;
+          snprintf(buffer, sizeof(buffer), "%.2f F", temperature_f);
+          str_populate(buffer);
+        }
+        else
+        {
+          putsUart("Unknown temperature unit. Use 'c' or 'f'.\r\n");
+        }
+      }
+
+      else str_populate(data.buffer);    // populate the display str base on the input
 		}
 }
