@@ -4,9 +4,6 @@ Persistence of vision display using STM32F446RE microcontroller, with built in t
 
 Instructions:
 1)  Configure a putty terminal for the correct COM port with 115200 BAUD
-2)  To display word
-   - Write word of your choice (18 characters max)
-4) To display temperature
-   - Enter "temperature" with desired unit ('f' or 'c')
-6) To display clock:
-      - Enter "clock" with current time (for example, "10 52")
+2)  To display words, type any string of your choice (18 characters max)
+4) To display temperature, enter "temperature" with desired unit ('f' or 'c')
+6) To display clock, enter "clock" with current time (for example, "10 52")
