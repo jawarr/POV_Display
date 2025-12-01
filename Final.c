@@ -5,6 +5,7 @@
 #include "fonts.h"
 #include "UART.h"
 #include "spi_temp_sensor.h"
+#include "i2c_rtc.h"
 
 // each col should be off by 1ms
 // 18 sections 
@@ -164,7 +165,11 @@ int main(void)
     initUart();									// Initialize UART terminal
     spi1_gpio_init();						// Initialize GPIO for SPI1
 	  spi1_init_1MHz_mode0();			// Initialize SPI1 for 1MHz, Mode 0
+    gpio_i2c1_init();           // Initialize GPIO for I2C1
+    i2c1_init();                 // Initialize I2C1  
 	
+    rtc_set_time(0x10, 0x42, 0x00);
+
     USER_DATA data;   					//user input data 
 		
 	
@@ -186,16 +191,25 @@ int main(void)
         char *text = getFieldString(&data, 1);
         if (compare_strings(text, "c"))
         {
-          float temperature = get_temperature();
-          snprintf(buffer, sizeof(buffer), "%.1f~C", temperature);
-          str_populate(buffer);
+					while(1)
+					{
+						float temperature = get_temperature();
+						snprintf(buffer, sizeof(buffer), "%.1f~C", temperature);
+						str_populate(buffer);
+						delayMs(250);
+					}
+          
         }
         else if (compare_strings(text, "f"))
         {
-          float temperature = get_temperature();
-          float temperature_f = (temperature * 9.0f / 5.0f) + 32.0f;
-          snprintf(buffer, sizeof(buffer), "%.1f~F", temperature_f);
-          str_populate(buffer);
+					while(1)
+					{
+						float temperature = get_temperature();
+						float temperature_f = (temperature * 9.0f / 5.0f) + 32.0f;
+						snprintf(buffer, sizeof(buffer), "%.1f~F", temperature_f);
+						str_populate(buffer);
+						delayMs(250);
+					} 
         }
         else
         {
@@ -205,7 +219,35 @@ int main(void)
 	
         }
       }
+      
+      // Check for clock command
+      else if (isCommand(&data, "clock", 2))
+      {
+				int hours = getFieldInteger(&data, 1);
+				int mins = getFieldInteger(&data, 2);
+				
+				int hours_BCD = ((hours / 10) << 4) | (hours % 10);
+				int mins_BCD = ((mins / 10) << 4) | (mins % 10);
+				rtc_set_time(hours_BCD, mins_BCD, 0x00);
+				
+				while(1)
+				{
+					uint8_t hours_bcd = i2c_read_reg(BQ32002_ADDR, REG_HOURS);
+					uint8_t minutes_bcd = i2c_read_reg(BQ32002_ADDR, REG_MINUTES);
+					uint8_t seconds_bcd = i2c_read_reg(BQ32002_ADDR, REG_SECONDS);
 
-      else str_populate(data.buffer);    // populate the display str base on the input
+					uint8_t hours = bcd_to_bin(hours_bcd & 0x3F);
+					uint8_t minutes = bcd_to_bin(minutes_bcd & 0x7F);
+					uint8_t seconds = bcd_to_bin(seconds_bcd);
+
+					char buffer[18];
+					snprintf(buffer, sizeof(buffer), "%02u:%02u:%02u", hours, minutes, seconds);
+					str_populate(buffer);
+					delayMs(250);
+				}
+      } 
+
+      // Otherwise, just populate the display string
+      else str_populate(data.buffer); 
 		}
 }

@@ -434,6 +434,16 @@
               <FileType>5</FileType>
               <FilePath>.\spi_temp_sensor.h</FilePath>
             </File>
+            <File>
+              <FileName>i2c_rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\i2c_rtc.c</FilePath>
+            </File>
+            <File>
+              <FileName>i2c_rtc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\i2c_rtc.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
