@@ -51,6 +51,7 @@ extern uint8_t font_exclam[5];
 extern uint8_t font_question[5];
 extern uint8_t font_dash[5];
 extern uint8_t font_colon[5];
+extern uint8_t font_degree[5];
 
 // Space
 extern uint8_t font_space[5];

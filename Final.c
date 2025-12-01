@@ -168,9 +168,9 @@ int main(void)
     USER_DATA data;   					//user input data 
 		
 	
-		putsUart("\e[0;92m"); 									// bold green text
+		putsUart("\e[0;92m"); // bold green text
 		putsUart("Enter text to display:\n\r");			
-    putsUart("\e[0m");	  									// reset to default text
+    putsUart("\e[0m"); // reset to default text color
 	
     while (1) 
 		{
@@ -187,19 +187,22 @@ int main(void)
         if (compare_strings(text, "c"))
         {
           float temperature = get_temperature();
-          snprintf(buffer, sizeof(buffer), "%.2f C", temperature);
+          snprintf(buffer, sizeof(buffer), "%.1f~C", temperature);
           str_populate(buffer);
         }
         else if (compare_strings(text, "f"))
         {
           float temperature = get_temperature();
           float temperature_f = (temperature * 9.0f / 5.0f) + 32.0f;
-          snprintf(buffer, sizeof(buffer), "%.2f F", temperature_f);
+          snprintf(buffer, sizeof(buffer), "%.1f~F", temperature_f);
           str_populate(buffer);
         }
         else
         {
+					putsUart("\e[0;91m"); // red text
           putsUart("Unknown temperature unit. Use 'c' or 'f'.\r\n");
+					putsUart("\e[0m"); // reset to default text color
+	
         }
       }
 
